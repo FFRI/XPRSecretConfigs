@@ -83,6 +83,68 @@
          condition:
              Macho and all of ($str_*) and #str_swift > 84 and any of ($common_*) and filesize < 1500KB
     }
+    private rule JavaScript {
+        meta:
+            //yl ignore-meta
+            description = "private rule to match JavaScript code"
+        strings:
+            $indicator_1 = /function([ \t]*|[ \t]+[\w]+[ \t]*)\([\w \t,]*\)[ \t]*\{/
+            $indicator_2 = /\beval[ \t]*\(/
+            $indicator_3 = /new[ \t]+ActiveXObject\(/
+            $indicator_4 = /xfa\.((resolve|create)Node|datasets|form)/
+            $indicator_5 = /\.oneOfChild/
+        
+        condition:
+            any of them
+    }
+    rule macos_sheepswap_obfuscated_scripts {
+        strings:
+            $stringA = "brandId"
+            $stringB = "srchProxyURL"
+            $stringC = "contentRuntimeUrl"
+            $stringD = "redurl"
+            $stringE = "extensionId"
+            $stringF = "userGuid"
+            $stringG = "srchMatchData"
+            $stringH = "window.safari.extension.dispatchMessage"
+            $stringI = "arguments.callee.toString().split(String.fromCharCode(32))[1].slice(0,-2)"
+        condition:
+            JavaScript and 8 of them and #stringI > 30 and filesize < 30KB
+    }
+    private rule JavaScript {
+        meta:
+            //yl ignore-meta
+            description = "private rule to match JavaScript code"
+        strings:
+            $indicator_1 = /function([ \t]*|[ \t]+[\w]+[ \t]*)\([\w \t,]*\)[ \t]*\{/
+            $indicator_2 = /\beval[ \t]*\(/
+            $indicator_3 = /new[ \t]+ActiveXObject\(/
+            $indicator_4 = /xfa\.((resolve|create)Node|datasets|form)/
+            $indicator_5 = /\.oneOfChild/
+        
+        condition:
+            any of them
+    }
+    rule hunt_macos_sheepswap_obfuscated_scripts {
+        strings:
+            $stringA = "addEventListener"
+            $stringB = "window.safari.extension.dispatchMessage"
+            $stringC = "window.navigator.userAgent"
+            $stringD = "data.reasonId"
+            $stringE = "Math.round"
+            $stringF = "compressToBase64"
+            $stringG = "String.fromCharCode"
+            $stringH = "arguments.callee.toString()."
+        condition:
+            JavaScript and all of them and #stringG > 30 and #stringH > 30 and filesize < 30KB
+    }
+    rule hunt_macos_sheepswap_js_expand_set {
+        strings:
+            $expand = /return expand\(.{1,8}\);/
+            $fncDecode = /return fncDecode\(.{4}\);/
+        condition:
+            #fncDecode > 5 and for (#fncDecode - 4) i in (2..#fncDecode) : (@fncDecode[i] - @fncDecode[i-1] < 180) or #expand > 5 and for (#expand - 4) i in (2..#expand) : (@expand[i] - @expand[i-1] < 180)
+    }
     rule hunt_macos_sheepswap_obfuscated_js {
         strings:
             $a = "arguments.callee.toString().split"
