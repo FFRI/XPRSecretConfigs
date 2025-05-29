@@ -72,7 +72,7 @@
                     $r = "/Library/LaunchDaemons/%s.plist"
                     $s = "/tmp0x%x"
             condition:
-                all of them and filesize < 5MB
+                all of them and filesize < 10MB
         }
     
         rule adload_e_mrt {

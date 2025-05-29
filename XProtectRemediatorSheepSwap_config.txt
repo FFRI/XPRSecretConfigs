@@ -73,6 +73,16 @@
         condition:
             Macho and any of ($x_*) and (2 of ($s_*) or (any of ($s_*) and $ss)) and $sws and filesize < 1500KB
     }
+    rule macos_sheepswap_new_bunldeID {
+        strings:
+             $str_selector_1 = "getStateOfSafariExtensionWithIdentifier:completionHandler:"
+             $str_selector_2 = "showPreferencesForExtensionWithIdentifier:completionHandler:"
+             $str_swift = "_swift"
+             $common_1 = {0011223060293080015342544370105443701053425342534258447030601541}
+             $common_2 = {4152415241524152415241524252426023437030534470107010600F44700870}
+         condition:
+             Macho and all of ($str_*) and #str_swift > 84 and any of ($common_*) and filesize < 1500KB
+    }
     rule hunt_macos_sheepswap_obfuscated_js {
         strings:
             $a = "arguments.callee.toString().split"
