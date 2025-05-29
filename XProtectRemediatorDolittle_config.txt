@@ -87,6 +87,13 @@ rule XProtect_MACOS_DOLITTLE_DOFMVAD {
         $b = { 83 C0 ?? 89 45 ?? 8A 45 ?? 88 45 ?? C7 45 ?? ?? 00 00 00 8B 45 ?? 83 C0 ?? 89 45 ?? 8B 45 ?? 83 C0 ?? 89 45 ?? 8B 45 ?? 83 C0 ?? 89 45 ?? 8B 45 ?? 83 C0 ?? 89 45 ?? 8B 45 ?? 83 C0 ?? 89 45 ?? 8B 45 ?? 83 C0 ?? 89 45 ?? 8B 45 }
     condition:
         Macho and 250KB < filesize and filesize <= 2MB and #b > 700 and #a >= 7
+rule XProtect_MACOS_DOLITTLE_DOFNPXR {
+    strings:
+        $a = { 55 48 89 E5 B8 ?? 00 00 00 85 C0 78 33 50 58 50 58 90 89 C1 8A 14 CF 50 58 50 58 90 50 58 50 58 90 50 58 50 58 90 50 58 50 58 90 80 F2 ?? 88 [3 - 6] 50 58 50 58 90 50 58 FF C8 EB C9 5D C3 }
+    condition:
+        Macho
+        and 250KB < filesize and filesize <= 2MB
+        and #a >= 25
 rule XProtect_MACOS_DOLITTLE_DYINSTXR {
     strings:
         $a01 = { 40 66 64 6f 75 21 48 6f 72 75 60 6d 6d 64 73 }
