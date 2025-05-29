@@ -15,6 +15,7 @@ This repository contains the decrypted configuration data of XProtect Remediator
 |2023/06/08|[99](https://eclecticlight.co/2023/06/08/apple-has-just-released-an-update-to-xprotect-remediator-5/)|
 |2023/08/08|[108](https://eclecticlight.co/2023/08/08/apple-has-just-released-an-update-to-xprotect-remediator-7/)|
 |2023/09/01|[109](https://eclecticlight.co/2023/09/01/apple-has-just-released-an-update-to-xprotect-remediator-8/)|
+|2023/09/15|[111](https://eclecticlight.co/2023/09/15/apple-has-just-released-updates-to-xprotect-and-xprotect-remediator-3/)|
 
 ## Author
 
