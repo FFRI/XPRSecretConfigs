@@ -1,0 +1,34 @@
+Genieo
+/Applications/InstallMac
+/Applications/Genieo.app
+~/Library/Application Support/IM.Installer
+~/Library/JavaLocal
+~/Library/Application Support/Listchack
+~/Library/Application Support/Leperdvil
+~/Library/Application Support/Javeview
+/Applications/InKeepr.app
+~/Library/Application Support/Nariabox
+~/Library/Safari/Extensions/Nariabox.safariextz
+~/Library/Safari/Extensions/Perfetnight.safariextz
+~/Library/Safari/Extensions/Smokycap-2.safariextz
+~/Library/Safari/Extensions/Smokycap.safariextz
+~/Library/Safari/Extensions/Omnibar.safariextz
+~/Library/Safari/Extensions/GoldenBoy.safariextz
+~/Library/LaunchAgents/com.Installer.completer.download.plist
+~/Library/LaunchAgents/com.Installer.completer.ltvbit.plist
+~/Library/LaunchAgents/com.Installer.completer.update.plist
+~/Library/LaunchAgents/com.genieo.completer.download.plist
+~/Library/LaunchAgents/com.genieo.completer.ltvbit.plist
+~/Library/LaunchAgents/com.genieo.completer.update.plist
+~/Library/LaunchAgents/Listchack.download.plist
+~/Library/LaunchAgents/Listchack.ltvbit.plist
+~/Library/LaunchAgents/Listchack.update.plist
+~/Library/LaunchAgents/Leperdvil.download.plist
+~/Library/LaunchAgents/Leperdvil.ltvbit.plist
+~/Library/LaunchAgents/Leperdvil.update.plist
+~/Library/LaunchAgents/Javeview.download.plist
+~/Library/LaunchAgents/Javeview.ltvbit.plist
+~/Library/LaunchAgents/Javeview.update.plist
+~/Library/LaunchAgents/Nariabox.download.plist
+~/Library/LaunchAgents/Nariabox.ltvbit.plist
+~/Library/LaunchAgents/Nariabox.update.plist

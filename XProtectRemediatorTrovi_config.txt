@@ -1,0 +1,17 @@
+MACOS.0260dfd
+MACOS.f07788a
+MACOS.ad27ff5
+MACOS.8ccf842
+/Library/Preferences/com.common.plist
+/Library/Preferences/com.settings.plist
+/etc/change_net_settings.sh
+/etc/pf_proxy.conf
+.preferences.plist
+-net.preferences.plist
+/Library/Preferences/
+/Library/LaunchDaemons/
+/Library/
+/etc/st-up.sh
+/etc/run_upd.sh
+.service.plist
+/etc/

@@ -1,0 +1,64 @@
+            import "macho"
+            rule macos_pirrit_obfuscated_installer
+            {
+                strings:
+                    $xor_imm = {
+                        80 35 ?? ?? ?? 00 ??
+                        80 35 ?? ?? ?? 00 ??
+                        80 35 ?? ?? ?? 00 ??
+                    }
+                    $symbolA = "_AuthorizationExecuteWithPrivileges"
+                    $symbolB = "_NSApp"
+                    $symbolC = "_CC_MD5"
+                    $symbolD = "_arc4random_uniform"
+                    $symbolE = "_dyld_register_func_for_add_image"
+                    $symbolF = "_IOServiceMatching"
+                    $dlopen = "_dlopen"
+                condition:
+                    $dlopen and
+                    3 of ($symbol*) and #xor_imm > 5 and
+                    for any segment_index in (0 .. macho.number_of_segments - 1):
+                    (
+                        for any section_index in (0 .. macho.segments[segment_index].nsects - 1):
+                        (
+                            macho.segments[segment_index].sections[section_index].segname == "__TEXT"
+                            and
+                            macho.segments[segment_index].sections[section_index].sectname == "__text"
+                            and
+                            $xor_imm in (
+                                 // We make sure we're actually in code, and not in bytes at the
+                                 // end of a binary which was causing a ton of unwanted hits on
+                                 // legit binaries from XCode.
+                                 //
+                                 // We use offset and not address here because address will
+                                 // apparently only work if YARA is scanning a process, not
+                                 // a binary
+                                 macho.segments[segment_index].sections[section_index].offset..
+                                 macho.segments[segment_index].sections[section_index].offset +
+                                 macho.segments[segment_index].sections[section_index].size
+                            )
+                        )
+                    )
+            }
+            
+            rule macos_pirrit_plist
+            {
+                strings:
+                    $fuzzy_copyright = /NSHumanReadableCopyright.{0,100}\.iup/
+                condition:
+                    filesize < 10KB and
+                    any of ($fuzzy_*)
+            }
+            
+        rule macos_pirrit_shell_script
+        {
+            strings:
+                $shebang = "#!"
+                $magic1 = { 50 4b 03 04 }
+                $password = /funzip.*?>/
+            condition:
+                $shebang at 0 and $magic1 and $password
+        }
+        
+/tmp
+PIRRIT
