@@ -54,6 +54,25 @@
         condition:
             filesize < 300KB and all of them
     }
+    private rule Macho {
+        meta:
+            description = "private rule to match Mach-O binaries"
+        condition:
+            uint32(0) == 0xfeedface or uint32(0) == 0xcefaedfe or uint32(0) == 0xfeedfacf or uint32(0) == 0xcffaedfe or uint32(0) == 0xcafebabe or uint32(0) == 0xbebafeca
+    }
+    rule macos_sheepswap_randomized_bundleID {
+        strings:
+            $x_1 = /com\.[a-zA-Z]{4,}[0-9]{1,5}[a-zA-Z]{4,}/
+            $x_2 = /com\.[a-zA-Z]{0,}[0-9]{1,5}[a-zA-Z]{10,}/
+            $s_1 = "getStateOfSafariExtensionWithIdentifier:completionHandler:"
+            $s_2 = "showPreferencesForExtensionWithIdentifier:completionHandler:"
+            $s_3 = "initWithBase64EncodedString:options:"
+            $s_4 = "setLaunchPath:"
+            $ss = "SUPERSTR"
+            $sws = "_swift"
+        condition:
+            Macho and any of ($x_*) and (2 of ($s_*) or (any of ($s_*) and $ss)) and $sws and filesize < 1500KB
+    }
     rule hunt_macos_sheepswap_obfuscated_js {
         strings:
             $a = "arguments.callee.toString().split"
@@ -83,4 +102,25 @@
             $extensionSelector = "messageReceivedWithName:fromPage:userInfo:"
         condition:
             all of them
+    }
+    private rule Macho {
+        meta:
+            description = "private rule to match Mach-O binaries"
+        condition:
+            uint32(0) == 0xfeedface or uint32(0) == 0xcefaedfe or uint32(0) == 0xfeedfacf or uint32(0) == 0xcffaedfe or uint32(0) == 0xcafebabe or uint32(0) == 0xbebafeca
+    }
+    rule hunt_macos_sheepswap_randomized_bundleID {
+        strings:
+            $x_1 = /com\.[a-zA-Z]{4,}[0-9]{1,5}[a-zA-Z]{4,}/
+            $x_2 = /com\.[a-zA-Z]{0,}[0-9]{1,5}[a-zA-Z]{10,}/
+            $x_3 = /com\.[a-zA-Z]{12,}[0-9]{1,5}/
+            $x_4 = /com\.[0-9]{1,5}[a-zA-Z]{1,5}[0-9]{1,5}[a-zA-Z]{,12}/
+            $s_1 = "getStateOfSafariExtensionWithIdentifier:completionHandler:"
+            $s_2 = "showPreferencesForExtensionWithIdentifier:completionHandler:"
+            $s_3 = "initWithBase64EncodedString:options:"
+            $s_4 = "setLaunchPath:"
+            $ss = "SUPERSTR"
+            $sws = "_swift"
+        condition:
+            Macho and any of ($x_*) and (2 of ($s_*) or (any of ($s_*) and $ss)) and $sws and filesize < 1500KB
     }
