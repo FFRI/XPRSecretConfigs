@@ -1,0 +1,13 @@
+    rule macos_redpine_implant {
+         strings:
+             $classA = "CRConfig"
+             $classD = "CRPwrInfo"
+             $classE = "CRGetFile"
+             $classF = "CRXDump"
+         condition:
+             all of them
+     }
+/System/Library/PrivateFrameworks/FMCore.framework
+/System/Library/Frameworks/CoreLocation.framework/CoreLocation
+/System/Library/Frameworks/AVFoundation.framework/AVFoundation
+/usr/lib/libsqlite3.dylib
