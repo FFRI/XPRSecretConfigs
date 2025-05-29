@@ -134,3 +134,5 @@
         condition:
             Macho and any of ($x_*) and (2 of ($s_*) or (any of ($s_*) and $ss)) and $sws and filesize < 1500KB
     }
+/[a-zA-Z]+\.app/Contents/
+/[a-zA-Z]+\.app/Contents/PlugIns/[a-zA-Z]+-extension\.appex/Contents/Info.plist$

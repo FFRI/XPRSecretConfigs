@@ -110,5 +110,17 @@
             condition:
                 3 of ($x*)
         }
+        rule hunt_macos_ptrace_deny
+        {
+            strings:
+                /*
+                    48c7c71f000000     mov     rdi, 0x1f PT_DENY_ATTACH 31 (0x1f)
+                    48c7c01a000002     mov     rax, 0x200001a ptrace 26 (0x1a)
+                    0f05               syscall
+                */
+                $ = {48 c7 c7 1f 00 00 00 48 c7 c0 1a 00 00 02 0f 05}
+            condition:
+                any of them
+        }
 /tmp
 PIRRIT
