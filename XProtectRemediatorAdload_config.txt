@@ -1374,7 +1374,98 @@ mov     rbx, 0x7fffffffffffffff
             $dylib_pled = "@rpath/pled.dylib"
             $dylib_smsf = "@rpath/smsf.dylib"
             $dylib_asu = "@rpath/asu.dylib"
+            $dylib_plu = "@rpath/plu.dylib"
         condition:
             Macho and any of them
     }
     
+    rule macos_adload_c2_daemon {
+        strings:
+            // This is the header from C2 communication
+            $smc_header = "smc100"
+            $serial = "IOPlatformSerialNumber" fullword
+            // List of escapes used in the C2
+            //$escape_string = " \n\r\t\f\v"
+            $escape_string = { 20 0a 0d 09 0c 0b 00 }
+            // Arrow used in logging
+            $arrow = "-> "
+            // Parameter used in C2 request
+            $m_parameter = "m="
+            $pipe_sep = "|,|"
+            $string_1 = "_uuid_generate_random"
+            $string_2 = "_uuid_unparse"
+            $string_3 = "_sysctl"
+            $string_4 = "_syslog"
+            $string_5 = "_getxattr"
+            $string_6 = "_getgrgid"
+            $string_7 = "_getpwuid"
+            $string_8 = "_SecTransformExecute"
+            $string_9 = "_IOServiceMatching"
+            $string_10 = "_IOServiceGetMatchingServices"
+            $string_11 = "BerTagged"
+            $string_12 = "berContent"
+            $string_13 = "berLengthBytes"
+            $string_14 = "IOPlatformUUID"
+            $string_15 = "IOEthernetInterface"
+            $string_16 = "IOPlatformSerialNumber"
+            $string_17 = "setBerTagValue"
+            
+        condition:
+            Macho and filesize < 4MB and (
+                ($smc_header or $serial) and
+                $escape_string and
+                ($arrow or $m_parameter or $pipe_sep)
+            ) and 10 of ($string*)
+    }
+    
+    rule macos_adload_inline_encryption {
+        strings:
+            $ = { 66 0f ef c0 48 8b ?? ?? ?? ff ff 4c 8b ?? ?? ?? ff ff 4c 89 f8 48 29 d8 66 48 0f 6e c8 }
+        
+        condition:
+            Macho and any of them
+    }
+    
+    rule macos_adload_dropper_a {
+        strings:
+            $ = "SfUtil"
+            $ = "%.*s.%.*s"
+        condition:
+            Macho and filesize < 1MB and all of them
+    }
+    
+    rule macos_adload_sse {
+        strings:
+            $ = { 30 30 31 63 6d 73 }
+            $ = { 75 75 69 64 5f 67 65 6e 48 }
+            $ = { 0f 57 C9 66 0f 7c c0 48 8d bd }
+            $ = { 48 0f ba f8 3f f2 48 0f 2c f0 66 0f 2e c2 48 0f 43 f0 e8 }
+            $ = { ff ff 0f 29 0f [16] 66 0f 28 c8 f2 0f 5c ca f2 48 0f 2c c1 }
+            
+        condition:
+            Macho and filesize < 5MB and any of them
+    }
+    
+    rule macos_adload_hex_strings {
+        strings:
+            $cls = /[a-zA-Z0-9]{9}(Collection|Data|Object|String)/
+            $hex = { 30 78 ?? ?? 2c 30 78 ?? ?? 2c 30 78 ?? ?? 2c }
+            $inf = "_inflate"
+        condition:
+            Macho and filesize < 5MB and $inf and #cls > 2 and #hex > 50
+    }
+    
+    rule macos_adload_i {
+        strings:
+            $ = {48 83 c3 08 48 89 9d [10] 00 48 89 85 [4] 48 c7 85 20 ff ff ff}
+            $ = {44 65 6c 65 67 61 74 65 43 35 73 68 6f 77 6e 53 62 76 70 57 76 64}
+            $ = {35 85 19 00 00 de 80 35 7f 19 00 00 40 80 35 79 19 00 00 99 80 35 73 19 00 00}
+            $ = {10 49 8b 4e 20 48 be 89 88 88 88 88 88 88 88 48 89 c8 48 f7 e6 49 39 dc 0f 84 c1 00}
+            $ = {48 c7 85 00 ff ff ff 00 00 00 00 48 c7 85 f8 fe ff ff 00 00 00 00 48 c7 85 28 ff ff ff a7 ab aa 32}
+          
+        condition:
+            Macho and any of them
+    }
+    
+    
+.*/?([a-zA-Z0-9]{4,32})/\1.app/Contents/MacOS/\1/\1$

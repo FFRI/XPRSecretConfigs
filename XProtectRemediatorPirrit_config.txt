@@ -1,4 +1,13 @@
             import "macho"
+            private rule Macho
+            {
+                //yl ignore-rule
+                meta:
+                    description = "private rule to match Mach-O binaries"
+                condition:
+                    uint32(0) == 0xfeedface or uint32(0) == 0xcefaedfe or uint32(0) == 0xfeedfacf or uint32(0) == 0xcffaedfe or uint32(0) == 0xcafebabe or uint32(0) == 0xbebafeca
+            }
+            
             rule macos_pirrit_obfuscated_installer
             {
                 strings:
@@ -71,6 +80,291 @@
                     2 of ($dl*) and 1 of ($asm*)
             }
             
+            rule macos_pirrit_chunago
+            {
+                strings:
+                    // 0fee25ffc5118a444e53aa8de39dd530feae104bef79b3be7521fca6ddd60087
+                    // 100010f1d  4863de             movsxd  rbx, esi
+                    // 100010f20  4c8b37             mov     r14, qword [rdi]
+                    // 100010f23  498b04de           mov     rax, qword [r14+rbx*8]
+                    // 100010f27  4885c0             test    rax, rax
+                    // 100010f2a  752f               jne     0x100010f5b
+                    //
+                    // 100010f2c  488d052d8a3400     lea     rax, [rel data_100359960]
+                    // 100010f33  488b3cd8           mov     rdi, qword [rax+rbx*8]
+                    // 100010f37  e8feb52d00         call    _strdup
+                    // 100010f3c  498904de           mov     qword [r14+rbx*8], rax
+                    // 100010f40  48bed74e52fce584
+mov     rsi, 0x7fed84e5fc524ed7
+                    // 100010f4a  4831de             xor     rsi, rbx
+                    // 100010f4d  4889c7             mov     rdi, rax
+                    // 100010f50  31d2               xor     edx, edx  {0x0}
+                    // 100010f52  e887feffff         call    sub_100010dde
+                    // 100010f57  498b04de           mov     rax, qword [r14+rbx*8]
+                    // ...
+                    // 100010f5f  c3                 retn     {__return_addr}
+                    $s1 = {
+                        55 48 89 e5 41 56 53 48
+                        63 de 4c 8b 37 49 8b 04
+                        de 48 85 c0 75 ?? 48 ??
+                        ?? ?? ?? ?? ?? 48 8b 3c
+                        d8 e8 ?? ?? ?? ?? 49 89
+                        04 de 48 ?? ?? ?? ?? ??
+                        ?? ?? ?? ?? 48 31 de 48
+                        89 c7 31 d2 e8 ?? ?? ??
+                        ?? 49 8b 04 de 5b 41 5e
+                        5d c3
+                    }
+                    // 701ffd20b370d93dba07232d516a4b3819670d9040d21c235c6f2c40f89e8371
+                    // 100010f5e  0f8ee4000000       jle     0x100011048
+                    //
+                    // 100010f64  4809ca             or      rdx, rcx
+                    // 100010f67  4889d1             mov     rcx, rdx
+                    // 100010f6a  48c1e10d           shl     rcx, 0xd
+                    // 100010f6e  4831d1             xor     rcx, rdx
+                    // 100010f71  4889ca             mov     rdx, rcx
+                    // 100010f74  48c1ea07           shr     rdx, 0x7
+                    // 100010f78  4831ca             xor     rdx, rcx
+                    // 100010f7b  4989d3             mov     r11, rdx
+                    // 100010f7e  49c1e311           shl     r11, 0x11
+                    // 100010f82  4931d3             xor     r11, rdx
+                    // 100010f85  4189c0             mov     r8d, eax
+                    // 100010f88  48c7c1ffffffff     mov     rcx, 0xffffffffffffffff
+                    // 100010f8f  31ff               xor     edi, edi  {0x0}
+                    // 100010f91  49b931d28e150823
+mov     r9, 0x58ed2308158ed231
+                    // 100010f9b  4d89da             mov     r10, r11
+                    //
+                    // 100010f9e  410fbe1c3c         movsx   ebx, byte [r12+rdi]
+                    // 100010fa3  83c3e0             add     ebx, 0xffffffe0
+                    // 100010fa6  83fb5e             cmp     ebx, 0x5e
+                    // 100010fa9  0f878d000000       ja      0x10001103c
+                    //
+                    // 100010faf  4883f95d           cmp     rcx, 0x5d
+                    // 100010fb3  7728               ja      0x100010fdd
+                    //
+                    // 100010fb5  4c89d0             mov     rax, r10
+                    // 100010fb8  48c1e00d           shl     rax, 0xd
+                    // 100010fbc  4c31d0             xor     rax, r10
+                    // 100010fbf  4889c1             mov     rcx, rax
+                    // 100010fc2  48c1e907           shr     rcx, 0x7
+                    // 100010fc6  4831c1             xor     rcx, rax
+                    // 100010fc9  4989ca             mov     r10, rcx
+                    // 100010fcc  49c1e211           shl     r10, 0x11
+                    // 100010fd0  4931ca             xor     r10, rcx
+                    // 100010fd3  48c7c1ffffffff     mov     rcx, 0xffffffffffffffff
+                    // 100010fda  4d89d3             mov     r11, r10
+                    // ...
+                    // 100011050  c3                 retn     {__return_addr}
+                    $s2 = {
+                        0f 8e ?? ?? ?? ?? 48 09
+                        ca 48 89 d1 48 c1 e1 0d
+                        48 31 d1 48 89 ca 48 c1
+                        ea 07 48 31 ca 49 89 d3
+                        49 c1 e3 11 49 31 d3 41
+                        89 c0 48 c7 c1 ff ff ff
+                        ff 31 ff 49 ?? ?? ?? ??
+                        ?? ?? ?? ?? ?? 4d 89 da
+                        41 0f be 1c 3c 83 c3 e0
+                        83 ?? ?? 0f 87 ?? ?? ??
+                        ?? 48 ?? ?? ?? 77 ?? 4c
+                        89 d0 48 c1 e0 0d 4c 31
+                        d0 48 89 c1 48 c1 e9 07
+                        48 31 c1 49 89 ca 49 c1
+                        e2 11 49 31 ca 48 c7 c1
+                        ff ff ff ff 4d 89 d3 4c
+                        89 d8 49 f7 e1 4c 89 de
+                        48 29 d6 48 d1 ee 48 01
+                        d6 48 c1 ee 06 48 6b c6
+                        5f 49 29 c3 48 89 c8 49
+                        f7 e1 48 29 d1 48 d1 e9
+                        48 01 d1 48 c1 e9 06 b8
+                        ?? ?? ?? ?? 4c 29 d8 45
+                        84 f6 49 0f 45 c3 89 da
+                        48 01 c2 0f b6 c2 69 c0
+                        ad 00 00 00 c1 e8 0e 6b
+                        c0 5f 28 c2 80 ?? ?? 41
+                        88 14 3c 49 89 f3 48 ff
+                        c7 49 39 f8 0f 85 ?? ??
+                        ?? ?? 5b 41 5c 41 5e 41
+                        5f 5d c3
+                    }
+                    // be610894086b840d04b4dad48ffecd0b2916ee6a1a13f9ee2b59f73ea83004c8
+                    // 100046ceb  0f84d2000000       je      0x100046dc3
+                    // ...
+                    // 100046d56  418d41ff           lea     eax, [r9-0x1]
+                    // 100046d5a  4189c8             mov     r8d, ecx
+                    // 100046d5d  4121c0             and     r8d, eax
+                    // 100046d60  eb13               jmp     0x100046d75
+                    //
+                    // 100046d62  4989c8             mov     r8, rcx
+                    // 100046d65  4939c9             cmp     r9, rcx
+                    // 100046d68  770b               ja      0x100046d75
+                    //
+                    // 100046d6a  4889c8             mov     rax, rcx
+                    // 100046d6d  31d2               xor     edx, edx  {0x0}
+                    // 100046d6f  49f7f1             div     r9
+                    // 100046d72  4989d0             mov     r8, rdx
+                    //
+                    // 100046d75  488b07             mov     rax, qword [rdi]
+                    // 100046d78  4a8b04c0           mov     rax, qword [rax+r8*8]
+                    // 100046d7c  4885c0             test    rax, rax
+                    // 100046d7f  7442               je      0x100046dc3
+                    //
+                    // 100046d81  488b30             mov     rsi, qword [rax]
+                    // 100046d84  4885f6             test    rsi, rsi
+                    // 100046d87  743a               je      0x100046dc3
+                    //
+                    // 100046d89  498d79ff           lea     rdi, [r9-0x1]
+                    //
+                    // 100046d8d  488b4608           mov     rax, qword [rsi+0x8]
+                    // 100046d91  4839c8             cmp     rax, rcx
+                    // 100046d94  7508               jne     0x100046d9e
+                    //
+                    // 100046d96  66394e10           cmp     word [rsi+0x10], cx
+                    // 100046d9a  751f               jne     0x100046dbb
+                    //
+                    // 100046d9c  eb27               jmp     0x100046dc5
+                    //
+                    // 100046d9e  4183fa01           cmp     r10d, 0x1
+                    // 100046da2  7705               ja      0x100046da9
+                    //
+                    // 100046da4  4821f8             and     rax, rdi
+                    // 100046da7  eb0d               jmp     0x100046db6
+                    //
+                    // 100046da9  4c39c8             cmp     rax, r9
+                    // 100046dac  7208               jb      0x100046db6
+                    //
+                    // 100046dae  31d2               xor     edx, edx  {0x0}
+                    // 100046db0  49f7f1             div     r9
+                    // 100046db3  4889d0             mov     rax, rdx
+                    //
+                    // 100046db6  4c39c0             cmp     rax, r8
+                    // 100046db9  7508               jne     0x100046dc3
+                    //
+                    // 100046dbb  488b36             mov     rsi, qword [rsi]
+                    // 100046dbe  4885f6             test    rsi, rsi
+                    // 100046dc1  75ca               jne     0x100046d8d
+                    //
+                    // 100046dc3  31f6               xor     esi, esi  {0x0}
+                    //
+                    // 100046dc5  4889f0             mov     rax, rsi
+                    // 100046dc8  5d                 pop     rbp {__saved_rbp}
+                    // 100046dc9  c3                 retn     {__return_addr}
+                    $s3 = {
+                        0f 84 ?? ?? ?? ?? 0f b7
+                        0e 4c 89 c8 48 d1 e8 48
+                        ?? ?? ?? ?? ?? ?? ?? ??
+                        ?? 48 21 c2 4c 89 c8 48
+                        29 d0 48 ?? ?? ?? ?? ??
+                        ?? ?? ?? ?? 48 89 c6 48
+                        21 d6 48 c1 e8 02 48 21
+                        d0 48 01 f0 48 89 c2 48
+                        c1 ea 04 48 01 c2 48 ??
+                        ?? ?? ?? ?? ?? ?? ?? ??
+                        48 21 d0 49 ?? ?? ?? ??
+                        ?? ?? ?? ?? ?? 4c 0f af
+                        d0 49 c1 ea 38 49 ?? ??
+                        ?? 77 ?? 41 8d 41 ff 41
+                        89 c8 41 21 c0 eb ?? 49
+                        89 c8 49 39 c9 77 ?? 48
+                        89 c8 31 d2 49 f7 f1 49
+                        89 d0 48 8b 07 4a 8b 04
+                        c0 48 85 c0 74 ?? 48 8b
+                        30 48 85 f6 74 ?? 49 8d
+                        79 ff 48 8b 46 08 48 39
+                        c8 75 ?? 66 39 4e 10 75
+                        ?? eb ?? 41 ?? ?? ?? 77
+                        ?? 48 21 f8 eb ?? 4c 39
+                        c8 72 ?? 31 d2
+                    }
+                    $a1 = "AMQP"
+                    $a2 = "_nanosleep"
+                    $a3 = "_vfprintf"
+                    $a4 = "EC_PRIVATEKEY"
+                    $a5 = "agents-dexchange"
+                    $a6 = "ABSPRI (w) >= 0 && ABSPRI (w) < NUMPRI"
+                condition:
+                    Macho and filesize < 5MB and any of ($s*) and $a1 and 3 of ($a*)
+            }
+        
+            
+            rule macos_pirrit_dropped_installer
+            {
+                strings:
+                    $a_1 = {00000000C080000006000000000000000000000000000000000000000E000000200000000C0000002F7573722F6C69622F64796C64000000000000001B000000}
+                    $a_2 = {000022000080300000000080000010000000108000001800000000000000000000002880000020000000488000002000000002000000180000007080000005000000D8800000480000000B00000050000000}
+                    $a_3 = {1100000F1105??1900000F1005??1900000F5705}
+                    $b_1 ="__bss"
+                    $b_2 = "@executable_path/../Frameworks"
+                    $b_3 ="__la_symbol_ptr "
+                    $b_4 ="__nl_symbol_ptr"
+                    $b_5 ="__got"
+                    $b_6 = "_system"
+                    $b_7 = "_remove"
+                    $b_8 = "__unwind_info"
+                condition:
+                    Macho and filesize < 100KB and any of ($a_*) and $b_1 and $b_2 and 3 of ($b_*)
+            }
+            
+            rule macos_hikari_obfuscator
+            {
+                strings:
+                    $s_build = ".build"
+                    $s_io_reg = "@_IORegistryEntryCreateCFProperty"
+                    $s_dlopen = "@_dlopen"
+                    $s_dlsym = "@_dlsym"
+                    // 3c748cd6050263416320998f05ed6a4229b2c7160cd18d7cb2f207b64d9ccce2
+                    // 100001108  31c8               xor     eax, ecx
+                    // 10000110a  89c1               mov     ecx, eax
+                    // 10000110c  f7d1               not     ecx
+                    // 10000110e  81e1edd9476c       and     ecx, 0x6c47d9ed
+                    // 100001114  251226b893         and     eax, 0x93b82612
+                    // 100001119  89c2               mov     edx, eax
+                    // 10000111b  4189c8             mov     r8d, ecx
+                    // 10000111e  418d8410f2d058b8   lea     eax, [r8+rdx-0x47a72f0e]
+                    // 100001126  89459c             mov     dword [rbp-0x64 {var_6c}], eax
+                    $a1 = {
+                        31 c8 89 c1 f7 d1 81 ??
+                        ?? ?? ?? ?? 25 ?? ?? ??
+                        ?? 89 c2 41 89 c8 41 8d
+                        84 10 f2 d0 58 b8 89 45
+                        9c
+                    }
+                    // b335da04a9919989c301c1e4ce67af7d9ffe54efac581d294336733422cb4fd1
+                    // 10002255b  8b05dfc10800       mov     eax, dword [rel data_1000ae740]
+                    // 100022561  8b0dddc10800       mov     ecx, dword [rel data_1000ae744]
+                    // 100022567  89c2               mov     edx, eax
+                    // 100022569  f7d2               not     edx
+                    // 10002256b  4189c8             mov     r8d, ecx
+                    // 10002256e  41f7d0             not     r8d
+                    // 100022571  4189d1             mov     r9d, edx
+                    // 100022574  4181e1670d10ab     and     r9d, 0xab100d67
+                    // 10002257b  2598f2ef54         and     eax, 0x54eff298
+                    // 100022580  4589c2             mov     r10d, r8d
+                    // 100022583  4181e2670d10ab     and     r10d, 0xab100d67
+                    // 10002258a  81e198f2ef54       and     ecx, 0x54eff298
+                    // 100022590  4109c1             or      r9d, eax
+                    // 100022593  4109ca             or      r10d, ecx
+                    // 100022596  4531d1             xor     r9d, r10d
+                    // 100022599  4409c2             or      edx, r8d
+                    // 10002259c  f7d2               not     edx
+                    // 10002259e  4109d1             or      r9d, edx
+                    $a2 = {
+                        8b ?? ?? ?? ?? ?? 8b ??
+                        ?? ?? ?? ?? 89 c2 f7 d2
+                        41 89 c8 41 f7 d0 41 89
+                        d1 41 ?? ?? ?? ?? ?? ??
+                        25 ?? ?? ?? ?? 45 89 c2
+                        41 ?? ?? ?? ?? ?? ?? 81
+                        ?? ?? ?? ?? ?? 41 09 c1
+                        41 09 ca 45 31 d1 44 09
+                        c2 f7 d2 41 09 d1
+                    }
+                condition:
+                    Macho and filesize < 1MB and 2 of ($s*) and any of ($a*)
+            }
+            
             rule macos_pirrit_plist
             {
                 strings:
@@ -90,6 +384,14 @@
                 $shebang at 0 and $magic1 and $password
         }
         
+        private rule Macho
+        {
+            //yl ignore-rule
+            meta:
+                description = "private rule to match Mach-O binaries"
+            condition:
+                uint32(0) == 0xfeedface or uint32(0) == 0xcefaedfe or uint32(0) == 0xfeedfacf or uint32(0) == 0xcffaedfe or uint32(0) == 0xcafebabe or uint32(0) == 0xbebafeca
+        }
         rule hunt_pirrit_variants
         {
             strings:
@@ -110,6 +412,27 @@
             condition:
                 3 of ($x*)
         }
+        rule hunt_macos_hikari_obfuscator 
+        {
+            strings:
+                // 50                 push    rax {var_8}
+                // e8eaffffff         call    _HikariFunctionWrapper.1492 ; This address doesn't change for the FunctionWrapper
+                // 59                 pop     rcx {var_8}
+                // c3                 retn     {__return_addr}
+                $func_wrapper_x86 = { 50 e8 ea ff ff ff 59 c3 }
+                // fd7bbfa9   stp     x29, x30, [sp, #-0x10]! {__saved_x29} {__saved_x30}
+                // fbffff97   bl      _PDFMFunctionWrapper.476
+                // fd7bc1a8   ldp     x29, x30, [sp], #0x10 {__saved_x29} {__saved_x30}
+                // c0035fd6   ret     
+                $func_wrapper_arm = { fd 7b bf a9 fb ff ff 97 fd 7b c1 a8 c0 03 5f d6 }
+                $func_wrapper = /_[a-z]{2,16}FunctionWrapper(\.\d{3,4})?/i
+                $s_build = ".build"
+                $s_io_reg = "@_IORegistryEntryCreateCFProperty"
+                $s_dlopen = "@_dlopen"
+                $s_dlsym = "@_dlsym"
+            condition:
+                Macho and 2 of ($s*) and for any of ($func*) : ( # > 75 )
+        }
         rule hunt_macos_ptrace_deny
         {
             strings:
@@ -124,3 +447,5 @@
         }
 /tmp
 PIRRIT
+/tmp\.\w{6,10}$
+^.*?/Library/([a-zA-Z]{2,24})/\1$
