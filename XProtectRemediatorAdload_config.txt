@@ -295,3 +295,39 @@
         }
     
 /var/root/.mitmproxy
+        rule adload_search_agent_qls {
+            strings:
+                $code = {
+                    b8 ?? ?? ?? ?? 49 89 45
+                    28 49 83 65 50 00 49 83
+                    65 48 00 49 83 65 40 00
+                    49 83 65 38 00 49 83 65
+                    30 00 49 89 45 58 49 83
+                    a5 80 00 00 00 00 49 83
+                    65 78 00 49 83 65 70 00
+                    49 83 65 68 00 49 83 65
+                    60 00 b9 ?? ?? ?? ??
+                }
+                // "raiseUnimplemented"
+                $s_unique = { 72 61 69 73 65 55 6e 69 6d 70 6c 65 6d 65 6e 74 65 64 }
+            condition:
+                all of them and filesize < 500KB
+        }
+        rule adload_search_daemon_qls {
+            strings:
+                $code = {
+                    b9 ?? ?? ?? ?? 49 89 4d
+                    28 49 89 45 50 49 89 45
+                    48 49 89 45 40 49 89 45
+                    38 49 89 45 30 49 89 4d
+                    58 49 89 85 80 00 00 00
+                    49 89 45 78 49 89 45 70
+                    49 89 45 68 49 89 45 60
+                    ba ?? ?? ?? ??
+                }
+                // "raiseUnimplemented"
+                $s_unique = { 72 61 69 73 65 55 6e 69 6d 70 6c 65 6d 65 6e 74 65 64 }
+            condition:
+                filesize < 2MB and all of them
+        }
+    
