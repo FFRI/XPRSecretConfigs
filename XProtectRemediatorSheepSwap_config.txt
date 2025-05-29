@@ -62,8 +62,8 @@
     }
     rule macos_sheepswap_randomized_bundleID {
         strings:
-            $x_1 = /com\.[a-zA-Z]{4,}[0-9]{1,5}[a-zA-Z]{4,}/
-            $x_2 = /com\.[a-zA-Z]{0,}[0-9]{1,5}[a-zA-Z]{10,}/
+            $x_1 = /com\.[a-zA-Z]{4,100}[0-9]{1,5}[a-zA-Z]{4,100}/
+            $x_2 = /com\.[a-zA-Z]{,100}[0-9]{1,5}[a-zA-Z]{10,100}/
             $s_1 = "getStateOfSafariExtensionWithIdentifier:completionHandler:"
             $s_2 = "showPreferencesForExtensionWithIdentifier:completionHandler:"
             $s_3 = "initWithBase64EncodedString:options:"
@@ -121,9 +121,9 @@
     }
     rule hunt_macos_sheepswap_randomized_bundleID {
         strings:
-            $x_1 = /com\.[a-zA-Z]{4,}[0-9]{1,5}[a-zA-Z]{4,}/
-            $x_2 = /com\.[a-zA-Z]{0,}[0-9]{1,5}[a-zA-Z]{10,}/
-            $x_3 = /com\.[a-zA-Z]{12,}[0-9]{1,5}/
+            $x_1 = /com\.[a-zA-Z]{4,100}[0-9]{1,5}[a-zA-Z]{4,100}/
+            $x_2 = /com\.[a-zA-Z]{,100}[0-9]{1,5}[a-zA-Z]{10,100}/
+            $x_3 = /com\.[a-zA-Z]{12,100}[0-9]{1,5}/
             $x_4 = /com\.[0-9]{1,5}[a-zA-Z]{1,5}[0-9]{1,5}[a-zA-Z]{,12}/
             $s_1 = "getStateOfSafariExtensionWithIdentifier:completionHandler:"
             $s_2 = "showPreferencesForExtensionWithIdentifier:completionHandler:"
