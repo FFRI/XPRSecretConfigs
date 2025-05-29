@@ -1,3 +1,5 @@
+ServiceDescription
+[Ww]indows?\s*[Ss]ervice
 private rule _fat
     condition:
         (
