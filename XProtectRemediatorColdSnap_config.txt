@@ -1,28 +1,3 @@
-99c31f166d1f1654a1b7dd1a6bec3b935022a020
-852ba9494c42c084a131e74fc347fa0361d7c3aa
-/private/etc/krb5d.conf
-~/Library/WebKit/xpdf.conf
-~/Library/Trial/
-~/Library/Translation/
-/Users/Shared/
-Quartz
-UpdateAgent
-systemui
-com.docker.vmnetd.helper
-pdpaste
-com.microsoft.office.licensingV3.helper
-corplink-helper
-gklp
-sambad
-zgkp
-prtspool
-dcups
-check_update
-translate
-update
-SafariChecker
-SafariUpdateAgent
-TranslationHelper
 private rule mach_magic
     condition:
         uint32(0) == 0xfeedface
@@ -123,6 +98,31 @@ rule macos_coldsnap_c_symbols {
         $ = "__ZN9WebStream9make_bodyEPhPm"
     condition:
         _macho and 4 of them
+gklp
+zgkp
+dcups
+Quartz
+sambad
+update
+pdpaste
+systemui
+prtspool
+translate
+UpdateAgent
+check_update
+SafariChecker
+/Users/Shared/
+corplink-helper
+~/Library/Trial/
+SafariUpdateAgent
+TranslationHelper
+~/Library/Translation/
+/private/etc/krb5d.conf
+com.docker.vmnetd.helper
+~/Library/WebKit/xpdf.conf
+com.microsoft.office.licensingV3.helper
+99c31f166d1f1654a1b7dd1a6bec3b935022a020
+852ba9494c42c084a131e74fc347fa0361d7c3aa
     rule macos_coldsnap_config {
         strings:
             $beacon_url = "http"

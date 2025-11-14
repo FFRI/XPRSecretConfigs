@@ -1,12 +1,12 @@
-.background
-.background.
-right-click
-right click
-option click
-choose open
 click open
 press open
-unidentified developer
-are you sure you want
-will always allow it
+.background
+right-click
+right click
+choose open
+.background.
+option click
 run on this mac
+will always allow it
+are you sure you want
+unidentified developer

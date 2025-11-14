@@ -1,5 +1,5 @@
-(/usr/local|/opt/homebrew|/opt/local|/usr)/bin/python3
 [\da-fA-F]{8}-([\da-fA-F]{4}-){3}[\da-fA-F]{12}
+(/usr/local|/opt/homebrew|/opt/local|/usr)/bin/python3
 rule MACOS_CRAPYRATOR_S1
     strings:
         $ = {

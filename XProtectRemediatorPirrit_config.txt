@@ -365,15 +365,10 @@ mov     r9, 0x58ed2308158ed231
                     Macho and filesize < 1MB and 2 of ($s*) and any of ($a*)
             }
             
-            rule macos_pirrit_plist
-            {
-                strings:
-                    $fuzzy_copyright = /NSHumanReadableCopyright.{0,100}\.iup/
-                condition:
-                    filesize < 10KB and
-                    any of ($fuzzy_*)
-            }
-            
+/tmp
+PIRRIT
+/tmp\.\w{6,10}$
+^.*?/Library/([a-zA-Z]{2,24})/\1$
         rule macos_pirrit_shell_script
         {
             strings:
@@ -384,6 +379,27 @@ mov     r9, 0x58ed2308158ed231
                 $shebang at 0 and $magic1 and $password
         }
         
+            rule macos_pirrit_plist
+            {
+                strings:
+                    $fuzzy_copyright = /NSHumanReadableCopyright.{0,100}\.iup/
+                condition:
+                    filesize < 10KB and
+                    any of ($fuzzy_*)
+            }
+            
+        rule hunt_macos_ptrace_deny
+        {
+            strings:
+                /*
+                    48c7c71f000000     mov     rdi, 0x1f PT_DENY_ATTACH 31 (0x1f)
+                    48c7c01a000002     mov     rax, 0x200001a ptrace 26 (0x1a)
+                    0f05               syscall
+                */
+                $ = {48 c7 c7 1f 00 00 00 48 c7 c0 1a 00 00 02 0f 05}
+            condition:
+                any of them
+        }
         private rule Macho
         {
             //yl ignore-rule
@@ -433,19 +449,3 @@ mov     r9, 0x58ed2308158ed231
             condition:
                 Macho and 2 of ($s*) and for any of ($func*) : ( # > 75 )
         }
-        rule hunt_macos_ptrace_deny
-        {
-            strings:
-                /*
-                    48c7c71f000000     mov     rdi, 0x1f PT_DENY_ATTACH 31 (0x1f)
-                    48c7c01a000002     mov     rax, 0x200001a ptrace 26 (0x1a)
-                    0f05               syscall
-                */
-                $ = {48 c7 c7 1f 00 00 00 48 c7 c0 1a 00 00 02 0f 05}
-            condition:
-                any of them
-        }
-/tmp
-PIRRIT
-/tmp\.\w{6,10}$
-^.*?/Library/([a-zA-Z]{2,24})/\1$

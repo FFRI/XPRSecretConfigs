@@ -163,6 +163,40 @@
         condition:
             Macho and (filesize < 2MB) and ((($a or any of ($b*)) and (2 of ($c*))) or (any of ($d*) and (all of ($e*))) or ((all of ($e*)) and 4 of ($f*))) and #c8 > 10 
     }
+/[a-zA-Z]+\.app/Contents/
+/[a-zA-Z]+\.app/Contents/PlugIns/[a-zA-Z]+-extension\.appex/Contents/Info.plist$
+    rule hunt_sheepswap_extension_obfuscation {
+        strings:
+            $stringBefore = "_$sSS5index6beforeSS5IndexVAD_tF"
+            $stringAfter = "_$sSS5index5afterSS5IndexVAD_tF"
+            $stringCount = "_$sSS5countSivg"
+            $immStringMov = { 49 ?? ?? ?? ?? ?? 28 29 00 ee 49}
+            $extensionClass = "extension22SafariExtensionHandler"
+            $extensionSelector = "messageReceivedWithName:fromPage:userInfo:"
+        condition:
+            all of them
+    }
+    private rule Macho {
+        meta:
+            description = "private rule to match Mach-O binaries"
+        condition:
+            uint32(0) == 0xfeedface or uint32(0) == 0xcefaedfe or uint32(0) == 0xfeedfacf or uint32(0) == 0xcffaedfe or uint32(0) == 0xcafebabe or uint32(0) == 0xbebafeca
+    }
+    rule hunt_macos_sheepswap_randomized_bundleID {
+        strings:
+            $x_1 = /com\.[a-zA-Z]{4,100}[0-9]{1,5}[a-zA-Z]{4,100}/
+            $x_2 = /com\.[a-zA-Z]{,100}[0-9]{1,5}[a-zA-Z]{10,100}/
+            $x_3 = /com\.[a-zA-Z]{12,100}[0-9]{1,5}/
+            $x_4 = /com\.[0-9]{1,5}[a-zA-Z]{1,5}[0-9]{1,5}[a-zA-Z]{,12}/
+            $s_1 = "getStateOfSafariExtensionWithIdentifier:completionHandler:"
+            $s_2 = "showPreferencesForExtensionWithIdentifier:completionHandler:"
+            $s_3 = "initWithBase64EncodedString:options:"
+            $s_4 = "setLaunchPath:"
+            $ss = "SUPERSTR"
+            $sws = "_swift"
+        condition:
+            Macho and any of ($x_*) and (2 of ($s_*) or (any of ($s_*) and $ss)) and $sws and filesize < 1500KB
+    }
     private rule JavaScript {
         meta:
             //yl ignore-meta
@@ -216,37 +250,3 @@
         condition:
             any of them and filesize < 50KB
     }
-    rule hunt_sheepswap_extension_obfuscation {
-        strings:
-            $stringBefore = "_$sSS5index6beforeSS5IndexVAD_tF"
-            $stringAfter = "_$sSS5index5afterSS5IndexVAD_tF"
-            $stringCount = "_$sSS5countSivg"
-            $immStringMov = { 49 ?? ?? ?? ?? ?? 28 29 00 ee 49}
-            $extensionClass = "extension22SafariExtensionHandler"
-            $extensionSelector = "messageReceivedWithName:fromPage:userInfo:"
-        condition:
-            all of them
-    }
-    private rule Macho {
-        meta:
-            description = "private rule to match Mach-O binaries"
-        condition:
-            uint32(0) == 0xfeedface or uint32(0) == 0xcefaedfe or uint32(0) == 0xfeedfacf or uint32(0) == 0xcffaedfe or uint32(0) == 0xcafebabe or uint32(0) == 0xbebafeca
-    }
-    rule hunt_macos_sheepswap_randomized_bundleID {
-        strings:
-            $x_1 = /com\.[a-zA-Z]{4,100}[0-9]{1,5}[a-zA-Z]{4,100}/
-            $x_2 = /com\.[a-zA-Z]{,100}[0-9]{1,5}[a-zA-Z]{10,100}/
-            $x_3 = /com\.[a-zA-Z]{12,100}[0-9]{1,5}/
-            $x_4 = /com\.[0-9]{1,5}[a-zA-Z]{1,5}[0-9]{1,5}[a-zA-Z]{,12}/
-            $s_1 = "getStateOfSafariExtensionWithIdentifier:completionHandler:"
-            $s_2 = "showPreferencesForExtensionWithIdentifier:completionHandler:"
-            $s_3 = "initWithBase64EncodedString:options:"
-            $s_4 = "setLaunchPath:"
-            $ss = "SUPERSTR"
-            $sws = "_swift"
-        condition:
-            Macho and any of ($x_*) and (2 of ($s_*) or (any of ($s_*) and $ss)) and $sws and filesize < 1500KB
-    }
-/[a-zA-Z]+\.app/Contents/
-/[a-zA-Z]+\.app/Contents/PlugIns/[a-zA-Z]+-extension\.appex/Contents/Info.plist$
