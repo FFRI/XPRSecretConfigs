@@ -1,6 +1,7 @@
-/Applications/3CX Desktop App.app/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libffmpeg.dylib
-~/Library/Application Support/3CX Desktop App/.main_storage
+kMDItemDisplayName == 'libffmpeg.dylib'
 ~/Library/Application Support/3CX Desktop App/UpdateAgent
+~/Library/Application Support/3CX Desktop App/.main_storage
+/Applications/3CX Desktop App.app/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libffmpeg.dylib
 rule macos_rankstank
     strings:
         $injected_func = "_run_avcodec"
@@ -10,4 +11,3 @@ rule macos_rankstank
         $stringC = "%s/UpdateAgent"
     condition:
         2 of them
-kMDItemDisplayName == 'libffmpeg.dylib'

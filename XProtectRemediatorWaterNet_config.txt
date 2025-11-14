@@ -1,3 +1,5 @@
+/(([a-zA-Z0-9]{19,40})|([a-zA-Z0-9]{39}/[a-zA-Z0-9]{39}))/(helper|main|m|h)$
+/(([a-zA-Z0-9]{7,18})|([a-zA-Z0-9]{41,})|([a-zA-Z0-9]{40,}/[a-zA-Z0-9]{40,}))/(helper|main|m|h)$
         private rule Macho
         {
             meta:
@@ -31,5 +33,3 @@
                 Macho and 2 of them
         }
     
-/(([a-zA-Z0-9]{19,40})|([a-zA-Z0-9]{39}/[a-zA-Z0-9]{39}))/(helper|main|m|h)$
-/(([a-zA-Z0-9]{7,18})|([a-zA-Z0-9]{41,})|([a-zA-Z0-9]{40,}/[a-zA-Z0-9]{40,}))/(helper|main|m|h)$

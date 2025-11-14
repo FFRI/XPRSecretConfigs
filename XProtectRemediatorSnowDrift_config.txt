@@ -1,24 +1,24 @@
-*/Library/Preferences/com.apple.iTunesInfo*.plist
-/Library/Preferences/com.apple.iTunesInfo.plist
-/Library/Preferences/com.apple.iTunesInfo29.plist
-com.apple.WebKit.WebContent+com.apple.Safari/com.apple.speech.speechsynthesisd/webcontent.dylib
-/Library/Logs/DiagnosticReports/.Analytics-Journal.core_analytics
-/Library/Application Support/Apple/Fonts/iWork/.Standard.ttc
-/Library/WebServer/share/httpd/manual/WindowServer
-~/Library/Application Support/com.apple.spotlight/Resources_V3/.CrashRep
-~/Library/Containers/com.apple.Notes/Data/Library/.CFUserTextDecoding
-~/Library/Containers/com.apple.FaceTime/Data/Library/windowserver
-~/Library/Containers/com.apple.languageassetd/loginwindow
-~/Library/LaunchAgents/.com.apple.softwareupdate.plist
-~/Library/ApplicationSupport/SyncServices/softwareupdate
-~/Library/Logs/imis.log
+.CrashRep
+loginwindow
 WindowServer
 windowserver
-loginwindow
 .Standard.tcc
-.CrashRep
-.CFUserTextDecoding
 _MACOS_LOAD.sig
+.CFUserTextDecoding
+~/Library/Logs/imis.log
+/Library/Preferences/com.apple.iTunesInfo.plist
+*/Library/Preferences/com.apple.iTunesInfo*.plist
+/Library/Preferences/com.apple.iTunesInfo29.plist
+/Library/WebServer/share/httpd/manual/WindowServer
+~/Library/LaunchAgents/.com.apple.softwareupdate.plist
+~/Library/ApplicationSupport/SyncServices/softwareupdate
+~/Library/Containers/com.apple.languageassetd/loginwindow
+/Library/Application Support/Apple/Fonts/iWork/.Standard.ttc
+/Library/Logs/DiagnosticReports/.Analytics-Journal.core_analytics
+~/Library/Containers/com.apple.FaceTime/Data/Library/windowserver
+~/Library/Containers/com.apple.Notes/Data/Library/.CFUserTextDecoding
+~/Library/Application Support/com.apple.spotlight/Resources_V3/.CrashRep
+com.apple.WebKit.WebContent+com.apple.Safari/com.apple.speech.speechsynthesisd/webcontent.dylib
         private rule mach_magic
         {
             condition:
